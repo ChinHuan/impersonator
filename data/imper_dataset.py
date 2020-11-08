@@ -52,7 +52,7 @@ class ImPerBaseDataset(DatasetBase):
         self._num_videos = 0
         self._dataset_size = 0
         use_ids_filename = self._opt.train_ids_file if self._is_for_train else self._opt.test_ids_file
-        use_ids_filepath = os.path.join(self._root, use_ids_filename)
+        use_ids_filepath = os.path.join(self._opt.ids_dir, use_ids_filename)
         self._vids_info = self._read_vids_info(use_ids_filepath)
 
     def _read_vids_info(self, file_path):
