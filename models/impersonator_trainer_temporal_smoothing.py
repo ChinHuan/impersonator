@@ -228,7 +228,7 @@ class Impersonator(BaseModel):
                                            tsf_dim=3+self._G_cond_nc, repeat_num=self._opt.repeat_num)
 
     def _create_discriminator(self):
-        return NetworksFactory.get_by_name('discriminator_patch_gan', input_nc=3 + self._D_cond_nc,
+        return NetworksFactory.get_by_name('discriminator_patch_gan', input_nc=3 + self._D_cond_nc * 2,
                                            norm_type=self._opt.norm_type, ndf=64, n_layers=4, use_sigmoid=False)
 
     def _init_train_vars(self):
@@ -316,7 +316,7 @@ class Impersonator(BaseModel):
             self._real_src = src_img
             self._real_tsf = tsf2_img
 
-            self._bg_mask = torch.cat((src_crop_mask, tsf1_crop_mask, tsf3_crop_mask), dim=0)
+            self._bg_mask = torch.cat((src_crop_mask, tsf1_crop_mask), dim=0)
             if self._opt.bg_both:
                 self._input_G_bg = torch.cat([input_G_src_bg, input_G_tsf_bg], dim=0)
             else:
@@ -410,9 +410,10 @@ class Impersonator(BaseModel):
                self._loss_g_mask + self._loss_g_mask_smooth
 
     def _optimize_D(self, fake_tsf_imgs):
-        tsf_cond = self._input_G_tsf[:, 3:]
-        fake_input_D = torch.cat([fake_tsf_imgs.detach(), tsf_cond], dim=1)
-        real_input_D = torch.cat([self._real_tsf, tsf_cond], dim=1)
+        tsf1_cond = self._input_G_tsf1[:, 3:]
+        tsf3_cond = self._input_G_tsf3[:, 3:]
+        fake_input_D = torch.cat([fake_tsf_imgs.detach(), tsf1_cond, tsf3_cond], dim=1)
+        real_input_D = torch.cat([self._real_tsf, tsf1_cond, tsf3_cond], dim=1)
 
         d_real_outs = self._D.forward(real_input_D)
         d_fake_outs = self._D.forward(fake_input_D)
@@ -473,7 +474,7 @@ class Impersonator(BaseModel):
     def visual_imgs(self, fake_bg, fake_src_imgs, fake_tsf_imgs, fake_masks):
         ids = fake_masks.shape[0] // 2
         self._vis_input = util.tensor2im(self._real_src)
-        self._vis_tsf = util.tensor2im(self._input_G_tsf[0, 0:3])
+        self._vis_tsf = util.tensor2im(self._input_G_tsf1[0, 0:3])
         self._vis_fake_bg = util.tensor2im(fake_bg)
         self._vis_fake_src = util.tensor2im(fake_src_imgs)
         self._vis_fake_tsf = util.tensor2im(fake_tsf_imgs)
