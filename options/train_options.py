@@ -25,6 +25,7 @@ class TrainOptions(BaseOptions):
         self._parser.add_argument('--use_style', action='store_true', help='whether to use style loss or not')
         self._parser.add_argument('--use_face', action='store_true', help='whether to use face loss or not')
         self._parser.add_argument('--mask_bce', action='store_true', help='whether to use CrossEntropyLoss or L1 loss in mask or not.')
+        self._parser.add_argument('--use_temporal_smoothing', action='store_true', help='whether to use temporal smoothing or not.')
         self._parser.add_argument('--nepochs_no_decay', type=int, default=10, help='# of epochs at starting learning rate')
         self._parser.add_argument('--nepochs_decay', type=int, default=20, help='# of epochs to linearly decay learning rate to zero')
 

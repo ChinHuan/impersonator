@@ -45,6 +45,10 @@ class ModelsFactory(object):
             from .impersonator_trainer import Impersonator
             model = Impersonator(*args, **kwargs)
 
+        elif model_name == 'impersonator_trainer_temporal_smoothing':
+            from .impersonator_trainer_temporal_smoothing import Impersonator
+            model = Impersonator(*args, **kwargs)
+
         elif model_name == 'impersonator_trainer_aug':
             from .impersonator_trainer_aug import Impersonator
             model = Impersonator(*args, **kwargs)

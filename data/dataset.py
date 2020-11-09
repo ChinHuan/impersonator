@@ -22,6 +22,10 @@ class DatasetFactory(object):
             from data.imper_dataset import ImPerDataset
             dataset = ImPerDataset(opt, is_for_train)
 
+        elif dataset_name == 'iPER_temporal_smoothing':
+            from data.imper_dataset import ImPerTemporalSmoothingDataset
+            dataset = ImPerTemporalSmoothingDataset(opt, is_for_train)
+
         elif dataset_name == 'fashion':
             from data.fashion_dataset import FashionPairDataset
             dataset = FashionPairDataset(opt, is_for_train)

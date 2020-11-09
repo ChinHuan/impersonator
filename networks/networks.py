@@ -18,6 +18,10 @@ class NetworksFactory(object):
             from .generator import ImpersonatorGenerator
             network = ImpersonatorGenerator(*args, **kwargs)
 
+        elif network_name == 'impersonator_temporal_smoothing':
+            from .generator import ImpersonatorTemporalSmoothingGenerator
+            network = ImpersonatorTemporalSmoothingGenerator(*args, **kwargs)
+
         elif network_name == 'deepfillv2':
             from .inpaintor import InpaintSANet
             network = InpaintSANet(*args, **kwargs)

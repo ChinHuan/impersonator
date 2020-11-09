@@ -7,7 +7,7 @@ from utils.util import load_pickle_file, ToTensor, ImageTransformer
 import glob
 
 
-__all__ = ['ImPerBaseDataset', 'ImPerDataset']
+__all__ = ['ImPerBaseDataset', 'ImPerDataset', 'ImPerTemporalSmoothingDataset']
 
 
 class ImPerBaseDataset(DatasetBase):
@@ -151,3 +151,30 @@ class ImPerDataset(ImPerBaseDataset):
         return images, smpls
 
 
+
+class ImPerTemporalSmoothingDataset(ImPerBaseDataset):
+
+    def __init__(self, opt, is_for_train):
+        super(ImPerTemporalSmoothingDataset, self).__init__(opt, is_for_train)
+        self._name = 'ImPerTemporalSmoothingDataset'
+
+    def _load_pairs(self, vid_info):
+        length = vid_info['length']
+
+        start = np.random.randint(0, 15)
+        end = np.random.randint(0, length-2)
+        pair_ids = np.array([start, end, end+1, end+2], dtype=np.int32)
+
+        smpls = np.concatenate((vid_info['cams'][pair_ids],
+                                vid_info['thetas'][pair_ids],
+                                vid_info['betas'][pair_ids]), axis=1)
+
+        images = []
+        images_paths = vid_info['images']
+        for t in pair_ids:
+            image_path = images_paths[t]
+            image = cv_utils.read_cv2_img(image_path)
+
+            images.append(image)
+
+        return images, smpls
