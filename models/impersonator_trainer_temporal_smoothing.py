@@ -381,7 +381,7 @@ class Impersonator(BaseModel):
                 self._optimizer_D.step()
 
     def _optimize_G(self, fake_bg, fake_src_imgs, fake_tsf_imgs, fake_masks):
-        fake_input_D = torch.cat([fake_tsf_imgs, self._input_G_tsf1[:, 3:]], self._input_G_tsf3[:, 3:]], dim=1)
+        fake_input_D = torch.cat([fake_tsf_imgs, self._input_G_tsf1[:, 3:], self._input_G_tsf3[:, 3:]], dim=1)
         d_fake_outs = self._D.forward(fake_input_D)
         self._loss_g_adv = self._compute_loss_D(d_fake_outs, 0) * self._opt.lambda_D_prob
 
