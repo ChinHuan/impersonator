@@ -405,7 +405,10 @@ if __name__ == "__main__":
         pred_output_dir = None
 
     print('\n\t\t\tImitating `{}`'.format(test_opt.tgt_path))
-    tgt_paths = scan_tgt_paths(test_opt.tgt_path, itv=1)
+    tgt_paths1 = scan_tgt_paths(test_opt.tgt_path, itv=1, start=0)
+    tgt_paths2 = scan_tgt_paths(test_opt.tgt_path, itv=1, start=1)
+    tgt_paths3 = scan_tgt_paths(test_opt.tgt_path, itv=1, start=2)
+    tgt_paths = [(tgt_paths1[i], tgt_paths2[i], tgt_paths3[i]) for i in range(len(tgt_paths1))]
     imitator.inference(tgt_paths, tgt_smpls=None, cam_strategy='smooth',
                        output_dir=pred_output_dir, visualizer=visualizer, verbose=True)
 
