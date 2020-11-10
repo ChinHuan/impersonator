@@ -73,7 +73,7 @@ def scan_tgt_paths(tgt_path, itv=20, start=0):
     if os.path.isdir(tgt_path):
         all_tgt_paths = glob.glob(os.path.join(tgt_path, '*'))
         all_tgt_paths.sort()
-        all_tgt_paths = all_tgt_paths[start:-2:itv]
+        all_tgt_paths = all_tgt_paths[start:start - 2 if start - 2 != 0 else len(all_tgt_paths):itv]
     else:
         all_tgt_paths = [tgt_path]
 
