@@ -20,3 +20,4 @@ thirdparty/his_evaluators/data/*.weights
 iPER-data
 checkpoints
 train_temporal_smoothing_cmd.txt
+run_imitator_temporal_smoothing_cmd.txt

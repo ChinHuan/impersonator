@@ -366,6 +366,35 @@ class ImpersonatorTemporalSmoothingGenerator(ImpersonatorGenerator):
         # print(front_rgb.shape, front_mask.shape)
         return src_img, src_mask, tsf_img, tsf_mask
 
+    def inference(self, src_encoder_outs, src_resnet_outs, tsf1_inputs, tsf3_inputs, T1, T3):
+        # encoder
+        src_x = src_encoder_outs[0]
+        tsf_x = self.tsf_model.encoders[0](tsf1_inputs)
+
+        tsf_encoder_outs = [tsf_x]
+        for i in range(1, self.n_down + 1):
+            src_x = src_encoder_outs[i]
+            warp1 = self.transform(src_x, T1)
+            warp3 = self.transform(src_x, T3)
+
+            tsf_x = self.tsf_model.encoders[i](tsf_x) + warp1 + warp3
+            tsf_encoder_outs.append(tsf_x)
+
+        # resnets
+        T1_scale = self.resize_trans(src_x, T1)
+        T3_scale = self.resize_trans(src_x, T3)
+        for i in range(self.repeat_num):
+            src_x = src_resnet_outs[i]
+            warp1 = self.stn(src_x, T1_scale)
+            warp3 = self.stn(src_x, T3_scale)
+            tsf_x = self.tsf_model.resnets[i](tsf_x) + warp1 + warp3
+
+        # decoders
+        tsf_img, tsf_mask = self.tsf_model.regress(self.tsf_model.decode(tsf_x, tsf_encoder_outs))
+
+        # print(front_rgb.shape, front_mask.shape)
+        return tsf_img, tsf_mask
+
 if __name__ == '__main__':
     imitator = ImpersonatorTemporalSmoothingGenerator(bg_dim=4, src_dim=6, tsf_dim=6, conv_dim=64, repeat_num=6)
 
