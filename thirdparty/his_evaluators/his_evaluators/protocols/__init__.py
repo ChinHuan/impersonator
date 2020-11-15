@@ -14,7 +14,7 @@ def create_dataset_protocols(dataset, data_dir):
         from .iPER import ICCVIPERProtocol
         return ICCVIPERProtocol(data_dir)
 
-    elif dataset == "iPER_ICCV_TS":
+    elif dataset == "iPER_TS":
         from .iPER import IPERTSProtocol
         return IPERTSProtocol(data_dir)
 

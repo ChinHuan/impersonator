@@ -128,7 +128,7 @@ if __name__ == "__main__":
 
     model = LWGEvaluatorModel(opt, output_dir=opt.output_dir)
     # iPER_MI_evaluator = IPERMotionImitationEvaluator(dataset="iPER", data_dir=opt.data_dir)
-    iPER_MI_evaluator = IPERMotionImitationEvaluator(dataset="iPER_ICCV", data_dir=opt.data_dir)
+    iPER_MI_evaluator = IPERMotionImitationEvaluator(dataset="iPER_TS", data_dir=opt.data_dir)
 
     si_results, ci_results = iPER_MI_evaluator.evaluate(
         model=model,
