@@ -280,6 +280,7 @@ class UnpairedMetricRunner(object):
                 if sub_key == "CS":
                     continue
                 feats = metric_results[key][sub_key]
+                print(feats)
                 metric_results[key][sub_key] = np.concatenate(feats, axis=0)
 
         results = dict()
