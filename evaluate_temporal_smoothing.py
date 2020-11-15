@@ -135,7 +135,7 @@ if __name__ == "__main__":
     # iPER_MI_evaluator = IPERMotionImitationEvaluator(dataset="iPER", data_dir=opt.data_dir)
     iPER_MI_evaluator = IPERMotionImitationEvaluator(dataset="iPER_ICCV", data_dir=opt.data_dir)
 
-    iPER_MI_evaluator.evaluate(
+    si_results, ci_results = iPER_MI_evaluator.evaluate(
         model=model,
         image_size=opt.image_size,
         pair_types=("ssim", "psnr", "lps", "face-CS", "OS-CS-reid"),
@@ -143,3 +143,4 @@ if __name__ == "__main__":
         device=torch.device("cuda:0")
     )
 
+    iPER_MI_evaluator.save_results(opt.output_dir, si_results, ci_results)

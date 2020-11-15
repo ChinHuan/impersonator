@@ -1,6 +1,6 @@
 
 
-VALID_DATASET = ["iPER", "iPER_ICCV", "MotionSynthetic"]
+VALID_DATASET = ["iPER", "iPER_ICCV", "iPER_TS", "MotionSynthetic"]
 
 
 def create_dataset_protocols(dataset, data_dir):
@@ -13,6 +13,10 @@ def create_dataset_protocols(dataset, data_dir):
     elif dataset == "iPER_ICCV":
         from .iPER import ICCVIPERProtocol
         return ICCVIPERProtocol(data_dir)
+
+    elif dataset == "iPER_ICCV_TS":
+        from .iPER import IPERTSProtocol
+        return IPERTSProtocol(data_dir)
 
     elif dataset == "MotionSynthetic":
         from .MotionSynthetic import MotionSyntheticProtocol
