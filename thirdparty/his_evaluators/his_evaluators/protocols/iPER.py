@@ -352,11 +352,17 @@ class IPERTSProtocol(IPERProtocol):
         tgt_paths2 = src_img_paths[start + 1:end - 1]
         tgt_paths3 = src_img_paths[start + 2:end]
         self_images_paths = [(tgt_paths1[i], tgt_paths2[i], tgt_paths3[i]) for i in range(len(tgt_paths1))]
+
+        smpls1 = src_vid_smpls[start:end - 2]
+        smpls2 = src_vid_smpls[start + 1:end - 1]
+        smpls3 = src_vid_smpls[start + 2:end]
+        self_vid_smpls = [(smpls1[i], smpls2[i], smpls3[i]) for i in range(len(smpls1))]
+
         eval_info["self_imitation"] = {
             "name": self_imitation["target"],
             "formated_name": self.format_name(self_imitation["target"]),
             "images": self_images_paths,
-            "smpls": src_vid_smpls[self_imitation["range"][0]: self_imitation["range"][1] + 1] if load_smpls else None,
+            "smpls": self_vid_smpls if load_smpls else None,
             "kps": src_vid_kps[self_imitation["range"][0]: self_imitation["range"][1] + 1] if load_kps else None,
             "self_imitation": True
         }
@@ -371,12 +377,17 @@ class IPERTSProtocol(IPERProtocol):
             start=cross_imitation["range"][0],
             end=cross_imitation["range"][1]
         )
+
+        smpls1 = target_vid_smpls[start:end - 2]
+        smpls2 = target_vid_smpls[start + 1:end - 1]
+        smpls3 = target_vid_smpls[start + 2:end]
+        target_vid_smpls = [(smpls1[i], smpls2[i], smpls3[i]) for i in range(len(smpls1))]
+
         eval_info["cross_imitation"] = {
             "name": target_vid_name,
             "formated_name": self.format_name(target_vid_name),
             "images": cross_images_paths,
-            "smpls": target_vid_smpls[
-                     cross_imitation["range"][0]: cross_imitation["range"][1] + 1] if load_smpls else None,
+            "smpls": target_vid_smpls if load_smpls else None,
             "kps": target_vid_kps[
                    cross_imitation["range"][0]: cross_imitation["range"][1] + 1] if load_kps else None,
             "self_imitation": False

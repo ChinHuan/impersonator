@@ -8,7 +8,7 @@ from his_evaluators import MotionImitationModel, IPERMotionImitationEvaluator
 from models.imitator_temporal_smoothing import Imitator
 from options.test_options import TestOptions
 from utils.visdom_visualizer import VisdomVisualizer
-from run_imitator_temporal_smoothing import adaptive_personalize, scan_tgt_paths
+from run_imitator_temporal_smoothing import adaptive_personalize
 from utils import cv_utils
 
 
@@ -59,11 +59,6 @@ class LWGEvaluatorModel(MotionImitationModel):
             out_dir = self.ci_out_dir
             count = self.num_preds_ci
             self.num_preds_ci += len(tgt_paths)
-
-        tgt_paths1 = scan_tgt_paths(tgt_paths, itv=1, start=0)
-        tgt_paths2 = scan_tgt_paths(tgt_paths, itv=1, start=1)
-        tgt_paths3 = scan_tgt_paths(tgt_paths, itv=1, start=2)
-        tgt_paths = [(tgt_paths1[i], tgt_paths2[i], tgt_paths3[i]) for i in range(len(tgt_paths1))]
 
         outputs = self.model.inference(tgt_paths, tgt_smpls=tgt_smpls, cam_strategy=cam_strategy,
                                        visualizer=None, verbose=True)
