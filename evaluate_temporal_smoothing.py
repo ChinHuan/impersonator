@@ -60,16 +60,24 @@ class LWGEvaluatorModel(MotionImitationModel):
             count = self.num_preds_ci
             self.num_preds_ci += len(tgt_paths)
 
-        outputs = self.model.inference(tgt_paths, tgt_smpls=tgt_smpls, cam_strategy=cam_strategy,
-                                       visualizer=None, verbose=True)
-        
+        # outputs = self.model.inference(tgt_paths, tgt_smpls=tgt_smpls, cam_strategy=cam_strategy,
+        #                                visualizer=None, verbose=True)
+        #
+        # all_preds_files = []
+        # for i, preds in enumerate(outputs):
+        #     filename = "{:0>8}.jpg".format(count)
+        #     pred_file = os.path.join(out_dir, 'pred_' + filename)
+        #     count += 1
+        #
+        #     cv_utils.save_cv2_img(preds, pred_file, normalize=True)
+        #     all_preds_files.append(pred_file)
+
         all_preds_files = []
-        for i, preds in enumerate(outputs):
+        for i in range(len(tgt_smpls)):
             filename = "{:0>8}.jpg".format(count)
             pred_file = os.path.join(out_dir, 'pred_' + filename)
             count += 1
-        
-            cv_utils.save_cv2_img(preds, pred_file, normalize=True)
+
             all_preds_files.append(pred_file)
 
         return all_preds_files
