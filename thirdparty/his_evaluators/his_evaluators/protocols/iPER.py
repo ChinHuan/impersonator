@@ -280,6 +280,9 @@ class IPERProtocol(Protocol):
 class IPERTSProtocol(IPERProtocol):
     def __init__(self, data_dir="/p300/iPER"):
         super().__init__(data_dir)
+        file = open("/home/student/Documents/impersonator/src_paths.pkl", "rb")
+        import pickle
+        self.src_paths = pickle.load(file)
 
     def __getitem__(self, item):
         """
@@ -327,9 +330,11 @@ class IPERTSProtocol(IPERProtocol):
         src_vid_smpls = self.get_smpls(vid_name)
         src_vid_kps = self.get_kps(vid_name)
 
-        src_vid_path = os.path.join(self.data_dir, self.images_folder, vid_name)
-        src_img_paths = glob.glob(os.path.join(src_vid_path, "*"))
-        src_img_paths.sort()
+        # src_vid_path = os.path.join(self.data_dir, self.images_folder, vid_name)
+        # src_img_paths = glob.glob(os.path.join(src_vid_path, "*"))
+        # src_img_paths.sort()
+
+        src_img_paths = self.src_paths[vid_name]
 
         src_img_names = vid_info["s_n"][str(num_sources)]
         src_img_ids = [int(t.split(".")[0]) for t in src_img_names]

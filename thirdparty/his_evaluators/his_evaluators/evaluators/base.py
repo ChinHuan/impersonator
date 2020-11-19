@@ -33,7 +33,6 @@ class PairedEvaluationDataset(Dataset):
     def __getitem__(self, item):
         pred_file, ref_file = self.pair_file_list[item]
         ref_file = ref_file[1]
-
         pred_img = load_img(pred_file, self.image_size)
         ref_img = load_img(ref_file, self.image_size)
 
@@ -281,7 +280,6 @@ class UnpairedMetricRunner(object):
                 if sub_key == "CS":
                     continue
                 feats = metric_results[key][sub_key]
-                print(feats)
                 metric_results[key][sub_key] = np.concatenate(feats, axis=0)
 
         results = dict()

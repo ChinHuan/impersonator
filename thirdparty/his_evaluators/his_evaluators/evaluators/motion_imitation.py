@@ -108,13 +108,14 @@ class MotionImitationRunnerProcessor(Process):
         # ci means cross-imitation
         all_ci_preds_ref_file_list = []
 
+
         for vid_info in tqdm(self.protocols):
             # source information, contains {"images", "smpls", "kps"},
             # here "images" are the list of full paths of source images (the length is 1)
             src_infos = vid_info["source"]
 
             # run personalization
-            src_infos = self.model.personalization(src_infos)
+            # src_infos = self.model.personalization(src_infos)
 
             # si means (self-imitation)
             si_infos = vid_info["self_imitation"]

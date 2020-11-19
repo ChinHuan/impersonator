@@ -146,4 +146,4 @@ if __name__ == "__main__":
         device=torch.device("cuda:0")
     )
 
-    iPER_MI_evaluator.save_results(opt.output_dir, si_results, ci_results)
+    iPER_MI_evaluator.save_results(opt.output_dir + "results.txt", si_results, ci_results)
