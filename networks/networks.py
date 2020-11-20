@@ -7,45 +7,6 @@ from .hmr import HumanModelRecovery
 from .facenet import Sphere20a, senet50
 
 
-class NetworksFactory(object):
-    def __init__(self):
-        pass
-
-    @staticmethod
-    def get_by_name(network_name, *args, **kwargs):
-
-        if network_name == 'impersonator':
-            from .generator import ImpersonatorGenerator
-            network = ImpersonatorGenerator(*args, **kwargs)
-
-        elif network_name == 'impersonator_temporal_smoothing':
-            from .generator import ImpersonatorTemporalSmoothingGenerator
-            network = ImpersonatorTemporalSmoothingGenerator(*args, **kwargs)
-
-        elif network_name == 'deepfillv2':
-            from .inpaintor import InpaintSANet
-            network = InpaintSANet(*args, **kwargs)
-
-        elif network_name == 'concat':
-            from .baseline import ConcatGenerator
-            network = ConcatGenerator(*args, **kwargs)
-
-        elif network_name == 'discriminator_patch_gan':
-            from .discriminator import PatchDiscriminator
-            network = PatchDiscriminator(*args, **kwargs)
-
-        elif network_name == 'global_local':
-            from .discriminator import GlobalLocalDiscriminator
-            network = GlobalLocalDiscriminator(*args, **kwargs)
-
-        else:
-            raise ValueError("Network %s not recognized." % network_name)
-
-        print("Network %s was created" % network_name)
-
-        return network
-
-
 class NetworkBase(nn.Module):
     def __init__(self):
         super(NetworkBase, self).__init__()
