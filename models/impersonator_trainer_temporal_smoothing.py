@@ -4,7 +4,9 @@ import torch.nn.functional as F
 from collections import OrderedDict
 import utils.util as util
 from .models import BaseModel
-from networks.networks import NetworksFactory, HumanModelRecovery, Vgg19, VGGLoss, FaceLoss, StyleLoss
+from networks.networks import HumanModelRecovery, Vgg19, VGGLoss, FaceLoss, StyleLoss
+from networks.generator import ImpersonatorTemporalSmoothingGenerator
+from networks.discriminator import PatchDiscriminator
 from utils.nmr import SMPLRenderer
 import ipdb
 
@@ -224,11 +226,11 @@ class Impersonator(BaseModel):
         self._D.cuda()
 
     def _create_generator(self):
-        return NetworksFactory.get_by_name(self._opt.gen_name, bg_dim=4, src_dim=3+self._G_cond_nc,
+        return ImpersonatorTemporalSmoothingGenerator(bg_dim=4, src_dim=3+self._G_cond_nc,
                                            tsf_dim=3+self._G_cond_nc, repeat_num=self._opt.repeat_num)
 
     def _create_discriminator(self):
-        return NetworksFactory.get_by_name('discriminator_patch_gan', input_nc=3 + self._D_cond_nc * 2,
+        return PatchDiscriminator(input_nc=3 + self._D_cond_nc * 2,
                                            norm_type=self._opt.norm_type, ndf=64, n_layers=4, use_sigmoid=False)
 
     def _init_train_vars(self):

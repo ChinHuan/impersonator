@@ -4,66 +4,6 @@ from torch.optim import lr_scheduler
 from collections import OrderedDict
 
 
-class ModelsFactory(object):
-    def __init__(self):
-        pass
-
-    @staticmethod
-    def get_by_name(model_name, *args, **kwargs):
-        model = None
-
-        if model_name == 'concat':
-            from .baseline import ConcatBaseline
-            model = ConcatBaseline(*args, **kwargs)
-
-        elif model_name == 'texture_warping':
-            from .baseline import TextureWarpingBaseline
-            model = TextureWarpingBaseline(*args, **kwargs)
-
-        elif model_name == 'feature_warping':
-            from .baseline import FeatureWarpingBaseline
-            model = FeatureWarpingBaseline(*args, **kwargs)
-
-        elif model_name == 'imitator':
-            from .imitator import Imitator
-            model = Imitator(*args, **kwargs)
-
-        elif model_name == 'swapper':
-            from .swapper import Swapper
-            model = Swapper(*args, **kwargs)
-
-        elif model_name == 'viewer':
-            from .viewer import Viewer
-            model = Viewer(*args, **kwargs)
-
-        elif model_name == 'animator':
-            raise NotImplementedError
-            # from .animator import Animator
-            # model = Animator(*args, **kwargs)
-
-        elif model_name == 'impersonator_trainer':
-            from .impersonator_trainer import Impersonator
-            model = Impersonator(*args, **kwargs)
-
-        elif model_name == 'impersonator_trainer_temporal_smoothing':
-            from .impersonator_trainer_temporal_smoothing import Impersonator
-            model = Impersonator(*args, **kwargs)
-
-        elif model_name == 'impersonator_trainer_aug':
-            from .impersonator_trainer_aug import Impersonator
-            model = Impersonator(*args, **kwargs)
-
-        elif model_name == 'impersonator_all_set_trainer_aug':
-            from .impersonator_trainer_aug import ImpersonatorAllSetTrain
-            model = ImpersonatorAllSetTrain(*args, **kwargs)
-
-        else:
-            raise ValueError("Model %s not recognized." % model_name)
-
-        print("Model %s was created" % model.name)
-        return model
-
-
 class BaseModel(object):
 
     def __init__(self, opt):

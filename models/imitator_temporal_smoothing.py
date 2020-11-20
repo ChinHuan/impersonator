@@ -4,7 +4,9 @@ import torch.nn.functional as F
 import numpy as np
 from tqdm import tqdm
 from .models import BaseModel
-from networks.networks import NetworksFactory, HumanModelRecovery
+from networks.networks import HumanModelRecovery
+from networks.generator import ImpersonatorTemporalSmoothingGenerator
+from networks.inpaintor import InpaintSANet
 from utils.nmr import SMPLRenderer
 from utils.detectors import PersonMaskRCNNDetector
 import utils.cv_utils as cv_utils
@@ -46,13 +48,13 @@ class Imitator(BaseModel):
             self.detector = None
 
     def _create_bgnet(self):
-        net = NetworksFactory.get_by_name('deepfillv2', c_dim=4)
+        net = InpaintSANet(c_dim=4)
         self._load_params(net, self._opt.bg_model, need_module=False)
         net.eval()
         return net
 
     def _create_generator(self):
-        net = NetworksFactory.get_by_name(self._opt.gen_name, bg_dim=4, src_dim=3+self._G_cond_nc,
+        net = ImpersonatorTemporalSmoothingGenerator(bg_dim=4, src_dim=3+self._G_cond_nc,
                                           tsf_dim=3+self._G_cond_nc, repeat_num=self._opt.repeat_num)
 
         if self._opt.load_path:

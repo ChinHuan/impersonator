@@ -1,7 +1,7 @@
 import time
 from options.train_options import TrainOptions
 from data.custom_dataset_data_loader import CustomDatasetDataLoader
-from models.models import ModelsFactory
+from models.impersonator_trainer_temporal_smoothing import Impersonator
 from utils.tb_visualizer import TBVisualizer
 from collections import OrderedDict
 
@@ -20,7 +20,7 @@ class Train(object):
         print('#train video clips = %d' % self._dataset_train_size)
         print('#test video clips = %d' % self._dataset_test_size)
 
-        self._model = ModelsFactory.get_by_name(self._opt.model, self._opt)
+        self._model = Impersonator(self._opt)
         self._tb_visualizer = TBVisualizer(self._opt)
 
         self._train()

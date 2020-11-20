@@ -201,46 +201,8 @@ class ImpersonatorGenerator(NetworkBase):
         # transfer generator
         self.tsf_model = ResUnetGenerator(conv_dim=conv_dim, c_dim=tsf_dim, repeat_num=repeat_num, k_size=3, n_down=self.n_down)
 
-    def forward(self, bg_inputs, src_inputs, tsf_inputs, T):
-
-        img_bg = self.bg_model(bg_inputs)
-
-        src_img, src_mask, tsf_img, tsf_mask = self.infer_front(src_inputs, tsf_inputs, T)
-
-        # print(front_rgb.shape, front_mask.shape)
-        return img_bg, src_img, src_mask, tsf_img, tsf_mask
-
     def encode_src(self, src_inputs):
         return self.src_model.inference(src_inputs)
-
-    def infer_front(self, src_inputs, tsf_inputs, T):
-        # encoder
-        src_x = self.src_model.encoders[0](src_inputs)
-        tsf_x = self.tsf_model.encoders[0](tsf_inputs)
-
-        src_encoder_outs = [src_x]
-        tsf_encoder_outs = [tsf_x]
-        for i in range(1, self.n_down + 1):
-            src_x = self.src_model.encoders[i](src_x)
-            warp = self.transform(src_x, T)
-            tsf_x = self.tsf_model.encoders[i](tsf_x) + warp
-
-            src_encoder_outs.append(src_x)
-            tsf_encoder_outs.append(tsf_x)
-
-        # resnets
-        T_scale = self.resize_trans(src_x, T)
-        for i in range(self.repeat_num):
-            src_x = self.src_model.resnets[i](src_x)
-            warp = self.stn(src_x, T_scale)
-            tsf_x = self.tsf_model.resnets[i](tsf_x) + warp
-
-        # decoders
-        src_img, src_mask = self.src_model.regress(self.src_model.decode(src_x, src_encoder_outs))
-        tsf_img, tsf_mask = self.tsf_model.regress(self.tsf_model.decode(tsf_x, tsf_encoder_outs))
-
-        # print(front_rgb.shape, front_mask.shape)
-        return src_img, src_mask, tsf_img, tsf_mask
 
     def swap(self, tsf_inputs, src_encoder_outs12, src_encoder_outs21, src_resnet_outs12, src_resnet_outs21, T12, T21):
         # encoder
@@ -267,32 +229,6 @@ class ImpersonatorGenerator(NetworkBase):
             warp12 = self.stn(src_x12, T_scale12)
             warp21 = self.stn(src_x21, T_scale21)
             tsf_x = self.tsf_model.resnets[i](tsf_x) + warp12 + warp21
-
-        # decoders
-        tsf_img, tsf_mask = self.tsf_model.regress(self.tsf_model.decode(tsf_x, tsf_encoder_outs))
-
-        # print(front_rgb.shape, front_mask.shape)
-        return tsf_img, tsf_mask
-
-    def inference(self, src_encoder_outs, src_resnet_outs, tsf_inputs, T):
-        # encoder
-        src_x = src_encoder_outs[0]
-        tsf_x = self.tsf_model.encoders[0](tsf_inputs)
-
-        tsf_encoder_outs = [tsf_x]
-        for i in range(1, self.n_down + 1):
-            src_x = src_encoder_outs[i]
-            warp = self.transform(src_x, T)
-
-            tsf_x = self.tsf_model.encoders[i](tsf_x) + warp
-            tsf_encoder_outs.append(tsf_x)
-
-        # resnets
-        T_scale = self.resize_trans(src_x, T)
-        for i in range(self.repeat_num):
-            src_x = src_resnet_outs[i]
-            warp = self.stn(src_x, T_scale)
-            tsf_x = self.tsf_model.resnets[i](tsf_x) + warp
 
         # decoders
         tsf_img, tsf_mask = self.tsf_model.regress(self.tsf_model.decode(tsf_x, tsf_encoder_outs))
@@ -394,17 +330,3 @@ class ImpersonatorTemporalSmoothingGenerator(ImpersonatorGenerator):
 
         # print(front_rgb.shape, front_mask.shape)
         return tsf_img, tsf_mask
-
-if __name__ == '__main__':
-    imitator = ImpersonatorTemporalSmoothingGenerator(bg_dim=4, src_dim=6, tsf_dim=6, conv_dim=64, repeat_num=6)
-
-    bg_x = torch.rand(2, 4, 256, 256)
-    src_x = torch.rand(2, 6, 256, 256)
-    tsf1_x = torch.rand(2, 6, 256, 256)
-    tsf3_x = torch.rand(2, 6, 256, 256)
-    T1 = torch.rand(2, 256, 256, 2)
-    T3 = torch.rand(2, 256, 256, 2)
-
-    img_bg, src_img, src_mask, tsf_img, tsf_mask = imitator(bg_x, src_x, tsf1_x, tsf3_x, T1, T3)
-
-    ipdb.set_trace()
